@@ -4,11 +4,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"fmt"
 	"time"
+	"strings"
+	"math/rand"
 )
 
-
 func main() {
-	discord, err := discordgo.New("Bot " + "")
+	discord, err := discordgo.New("Bot " + "MTY4MzA0OTgxOTY1Nzk5NDI0.C_jhaA.0khhXhj3QqeZ7OXQiIAbFdo1kHw")
 	if err != nil {
 		fmt.Println("error creating session", err)
 		return
@@ -29,8 +30,27 @@ func main() {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
-	if m.ChannelID == "168311106950004737" {
-		s.ChannelTyping("168311106950004737")
-		s.MessageReactionAdd(m.ChannelID, m.ID, ":babbu:230233791665405953")
+	if m.Author.ID != "168304981965799424" {
+		words := strings.Split(m.Content, " ")
+		if len(words) == 1 {
+			return
+		}
+		wordPlace := rand.Intn(len(words))
+		if len(words[wordPlace]) > 8 {
+			if rand.Intn(1) == 1 {
+				words[wordPlace] = words[wordPlace][0:len(words[wordPlace])-5] + "pylly"
+			} else {
+				words[wordPlace] = "pylly" + words[wordPlace][len(words[wordPlace])-5:]
+			}
+
+		} else {
+			words[wordPlace] = "pylly"
+		}
+
+		replacedWords := strings.Join(words, " ")
+		if rand.Intn(20) == 1 {
+			s.ChannelMessageSend(m.ChannelID, replacedWords)
+		}
+
 	}
 }
