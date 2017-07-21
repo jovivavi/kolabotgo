@@ -48,8 +48,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 		replacedWords := strings.Join(words, " ")
-		if rand.Intn(20) == 1 {
-			s.ChannelMessageSend(m.ChannelID, replacedWords)
+		if rand.Intn(10) == 1 {
+			s.ChannelMessageSend("215600297802727426", m.Author.Username + ": " +replacedWords)
 		}
 
 	}
