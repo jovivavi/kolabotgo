@@ -30,27 +30,33 @@ func main() {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
-	if m.Author.ID != "168304981965799424" {
-		words := strings.Split(m.Content, " ")
-		if len(words) == 1 {
-			return
-		}
-		wordPlace := rand.Intn(len(words))
-		if len(words[wordPlace]) > 8 {
+	if m.Author.ID == "168304981965799424" {
+		return
+	}
+	words := strings.Split(m.Content, " ")
+	if len(words) == 1 {
+		return
+	}
+	wordPlace := rand.Intn(len(words))
+
+	if len(words[wordPlace]) > 8 {
+		if strings.HasPrefix(words[wordPlace], "<:") || strings.HasPrefix(words[wordPlace], "http"){
+			words[wordPlace] = "pylly"
+		} else {
 			if rand.Intn(1) == 1 {
 				words[wordPlace] = words[wordPlace][0:len(words[wordPlace])-5] + "pylly"
 			} else {
 				words[wordPlace] = "pylly" + words[wordPlace][len(words[wordPlace])-5:]
 			}
-
-		} else {
-			words[wordPlace] = "pylly"
 		}
 
-		replacedWords := strings.Join(words, " ")
-		if rand.Intn(10) == 1 {
-			s.ChannelMessageSend("215600297802727426", m.Author.Username + ": " +replacedWords)
-		}
-
+	} else {
+		words[wordPlace] = "pylly"
 	}
+
+	replacedWords := strings.Join(words, " ")
+	if rand.Intn(10) == 1 {
+		s.ChannelMessageSend("215600297802727426", m.Author.Username+": "+replacedWords)
+	}
+
 }
