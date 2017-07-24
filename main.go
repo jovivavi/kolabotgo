@@ -40,7 +40,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	wordPlace := rand.Intn(len(words))
 
 	if len(words[wordPlace]) > 8 {
-		if strings.HasPrefix(words[wordPlace], "<:") || strings.HasPrefix(words[wordPlace], "http"){
+		if strings.HasPrefix(words[wordPlace], "<") || strings.HasPrefix(words[wordPlace], "http"){
 			words[wordPlace] = "pylly"
 		} else {
 			if rand.Intn(1) == 1 {
