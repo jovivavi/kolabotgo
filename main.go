@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"fmt"
-	"time"
-	"strings"
+	"github.com/bwmarrin/discordgo"
 	"math/rand"
+	"strings"
+	//"time"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
+	//fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
 	if m.Author.ID == "168304981965799424" {
 		return
 	}
@@ -40,10 +40,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	wordPlace := rand.Intn(len(words))
 
 	if len(words[wordPlace]) > 8 {
-		if strings.HasPrefix(words[wordPlace], "<") || strings.HasPrefix(words[wordPlace], "http"){
+		if strings.HasPrefix(words[wordPlace], "<") || strings.HasPrefix(words[wordPlace], "http") {
 			words[wordPlace] = "pylly"
 		} else {
-			if rand.Intn(1) == 1 {
+			if rand.Intn(2) == 1 {
 				words[wordPlace] = words[wordPlace][0:len(words[wordPlace])-5] + "pylly"
 			} else {
 				words[wordPlace] = "pylly" + words[wordPlace][len(words[wordPlace])-5:]
@@ -56,7 +56,23 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	replacedWords := strings.Join(words, " ")
 	if rand.Intn(10) == 1 {
-		s.ChannelMessageSend("215600297802727426", m.Author.Username+": "+replacedWords)
+		channel, _ := s.State.Channel(m.ChannelID)
+		embed := &discordgo.MessageEmbed{
+			Author: &discordgo.MessageEmbedAuthor{
+				Name:    m.Author.Username,
+				IconURL: m.Author.AvatarURL("128"),
+			},
+			Color: s.State.UserColor(m.Author.ID, m.ChannelID),
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "In " + channel.Name + ":",
+					Value:  replacedWords,
+					Inline: true,
+				},
+			},
+		}
+
+		s.ChannelMessageSendEmbed("168311106950004737", embed)
 	}
 
 }
