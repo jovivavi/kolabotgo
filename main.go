@@ -1,15 +1,25 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"math/rand"
 	"strings"
-	//"time"
+	"time"
 )
 
+var token string
+var botId string
+var channelId string
+
 func main() {
-	discord, err := discordgo.New("Bot " + "MTY4MzA0OTgxOTY1Nzk5NDI0.C_jhaA.0khhXhj3QqeZ7OXQiIAbFdo1kHw")
+	flag.StringVar(&token, "token", "", "Discord bot token")
+	flag.StringVar(&botId, "botId", "", "Bot user id")
+	flag.StringVar(&channelId, "channelId", "", "Channel id for message sending")
+	flag.Parse()
+
+	discord, err := discordgo.New("Bot " + token)
 	if err != nil {
 		fmt.Println("error creating session", err)
 		return
@@ -29,8 +39,8 @@ func main() {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	//fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
-	if m.Author.ID == "168304981965799424" {
+	fmt.Printf("%20s %20s %20s > %s\n", m.ChannelID, time.Now().Format(time.Stamp), m.Author.Username, m.Content)
+	if m.Author.ID == botId {
 		return
 	}
 	words := strings.Split(m.Content, " ")
@@ -72,7 +82,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			},
 		}
 
-		s.ChannelMessageSendEmbed("168311106950004737", embed)
+		s.ChannelMessageSendEmbed(channelId, embed)
 	}
 
 }
